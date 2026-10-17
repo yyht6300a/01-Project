@@ -26,18 +26,19 @@ class ToolMetadata(BaseModel):
     category: str = "other"
 
 
-class ProposedToolCall(BaseModel):
+class ToolCall(BaseModel):
     function: str
     args: dict[str, Any] = Field(default_factory=dict)
 
 
 class ClassifierInput(BaseModel):
-    """插件发来的结构化输入（从 user 消息的 JSON 解析）。"""
+    """插件发来的结构化输入（与模型组训练输入 task/tool_name/tool_args/tool_metadata/trace 一致）。"""
 
-    user_task: str = ""
-    history: list[dict[str, Any]] = Field(default_factory=list)
-    proposed_tool_call: ProposedToolCall
+    task: str = ""
+    tool_name: str = ""
+    tool_args: dict[str, Any] = Field(default_factory=dict)
     tool_metadata: ToolMetadata = Field(default_factory=ToolMetadata)
+    trace: list[ToolCall] = Field(default_factory=list)
 
 
 class GateOutput(BaseModel):

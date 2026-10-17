@@ -1,17 +1,12 @@
-from gate_server.schemas import (
-    Authorization,
-    ClassifierInput,
-    ProposedToolCall,
-    RiskLevel,
-    ToolMetadata,
-)
+from gate_server.schemas import Authorization, ClassifierInput, RiskLevel, ToolMetadata
 from gate_server.stubs import StubEngine
 
 
 def _make(read_only: bool, touches_remote: bool) -> ClassifierInput:
     return ClassifierInput(
-        user_task="t",
-        proposed_tool_call=ProposedToolCall(function="f", args={}),
+        task="t",
+        tool_name="f",
+        tool_args={},
         tool_metadata=ToolMetadata(read_only=read_only, touches_remote=touches_remote),
     )
 

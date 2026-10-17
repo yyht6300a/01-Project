@@ -53,7 +53,7 @@ def create_app(cfg: Config) -> FastAPI:
                 "message": f"engine error: {exc}", "type": "server_error", "code": 500,
             }})
 
-        log_request(inp.proposed_tool_call.function, gate, (time.time() - started) * 1000)
+        log_request(inp.tool_name, gate, (time.time() - started) * 1000)
         content = gate.to_content()
         prompt_tokens = _estimate_tokens(req.user_content())
         completion_tokens = _estimate_tokens(content)

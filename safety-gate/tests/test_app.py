@@ -14,10 +14,11 @@ def test_stub_end_to_end(tmp_path):
         "messages": [
             {"role": "system", "content": "sys"},
             {"role": "user", "content": json.dumps({
-                "user_task": "t",
-                "history": [],
-                "proposed_tool_call": {"function": "send_money", "args": {}},
+                "task": "t",
+                "tool_name": "send_money",
+                "tool_args": {},
                 "tool_metadata": {"read_only": False, "touches_remote": True},
+                "trace": [],
             })},
         ],
     }

@@ -3,7 +3,9 @@
   "host": "127.0.0.1",
   "port": 8001,
   "model_path": "",
+  "base_model": "",
   "local_only": false,
+  "device": "auto",
   "log_dir": "logs"
 }
 
