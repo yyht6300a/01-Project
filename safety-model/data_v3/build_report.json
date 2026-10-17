@@ -1,0 +1,125 @@
+{
+ "seed": 20261017,
+ "target_share": 0.07,
+ "deliveries": {
+  "worker_00.jsonl": 2399,
+  "worker_01.jsonl": 2469,
+  "worker_02.jsonl": 2430,
+  "worker_03.jsonl": 2388
+ },
+ "total_records": 9686,
+ "converted": 9686,
+ "error_count": 0,
+ "per_split": {
+  "train": 8252,
+  "val": 705,
+  "test": 729
+ },
+ "group_counts_per_split": {
+  "train": 60,
+  "val": 4,
+  "test": 4
+ },
+ "suite_plan": {
+  "banking": {
+   "n_groups": 11,
+   "samples": 1440,
+   "val": [
+    "banking::user_task_10",
+    127
+   ],
+   "test": [
+    "banking::user_task_14",
+    142
+   ]
+  },
+  "slack": {
+   "n_groups": 15,
+   "samples": 4143,
+   "val": [
+    "slack::user_task_8",
+    292
+   ],
+   "test": [
+    "slack::user_task_13",
+    308
+   ]
+  },
+  "travel": {
+   "n_groups": 14,
+   "samples": 2375,
+   "val": [
+    "travel::user_task_7",
+    166
+   ],
+   "test": [
+    "travel::user_task_3",
+    168
+   ]
+  },
+  "workspace": {
+   "n_groups": 28,
+   "samples": 1728,
+   "val": [
+    "workspace::user_task_8",
+    120
+   ],
+   "test": [
+    "workspace::user_task_15",
+    111
+   ]
+  }
+ },
+ "suite_split": {
+  "travel/train": 2041,
+  "slack/train": 3543,
+  "travel/val": 166,
+  "banking/train": 1171,
+  "workspace/train": 1497,
+  "travel/test": 168,
+  "slack/test": 308,
+  "banking/val": 127,
+  "workspace/val": 120,
+  "slack/val": 292,
+  "workspace/test": 111,
+  "banking/test": 142
+ },
+ "auth_by_split": {
+  "train": {
+   "UNAUTHORIZED": 2070,
+   "AUTHORIZED": 6071,
+   "UNCERTAIN": 111
+  },
+  "val": {
+   "AUTHORIZED": 530,
+   "UNAUTHORIZED": 166,
+   "UNCERTAIN": 9
+  },
+  "test": {
+   "AUTHORIZED": 592,
+   "UNCERTAIN": 14,
+   "UNAUTHORIZED": 123
+  }
+ },
+ "risk_by_split": {
+  "train": {
+   "LOW": 7429,
+   "HIGH": 823
+  },
+  "val": {
+   "LOW": 618,
+   "HIGH": 87
+  },
+  "test": {
+   "LOW": 658,
+   "HIGH": 71
+  }
+ },
+ "group_overlap_violations": [],
+ "id_overlap_with_train": {
+  "val": 0,
+  "test": 0
+ },
+ "validation_checked": 9686,
+ "validation_errors": 0
+}

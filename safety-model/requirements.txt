@@ -1,0 +1,12 @@
+# Dev machine (RTX 5060 Laptop, sm_120) now has CUDA torch (2.11.0+cu128):
+#   py -3.10 -m pip install torch==2.11.0 --index-url https://download.pytorch.org/whl/cu128
+# (the cu129 index tops out at torch 2.9.0; cu128 shipped 2.11.0 for cp310/win_amd64.)
+# School GPU machine: install the build matching its driver (e.g. cu129).
+torch>=2.6
+transformers>=4.56
+peft>=0.14
+accelerate>=0.34
+huggingface_hub>=0.26
+PyYAML>=6
+numpy>=1.26
+

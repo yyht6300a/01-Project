@@ -1,0 +1,45 @@
+# LoRA SFT v3 B-variant for TC2: same data_v3 and same starting checkpoint as
+# the 4-field run, but a 2-field target (authorization / risk_level only).
+# Used for the label-format A/B comparison.
+run_name: qwen25-1.5b-risk-lora-v3b-tc2
+base_model: /home/msai/fanlong001/ai6101-train/models/Qwen2.5-1.5B-Instruct
+
+data:
+  train: data_v3/train.jsonl
+  val: data_v3/val.jsonl
+
+model:
+  max_seq_len: 1024
+  target_format: "2field"
+  lora:
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.1
+    target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+optim:
+  lr: 2.0e-4
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  grad_clip: 1.0
+  warmup_ratio: 0.03
+  min_warmup_steps: 20
+  eta_min_ratio: 0.1
+
+train:
+  micro_batch_size: 4
+  grad_accum: 4
+  max_epochs: 2
+  max_steps: -1
+  eval_steps: 120
+  eval_gen_limit: 256
+  eval_batch_size: 16
+  grad_checkpoint: true
+  early_stop:
+    metric: auroc
+    patience: 2
+    min_delta: 0.002
+  seed: 42
+  output_dir: runs/qwen25-1.5b-risk-lora-v3b-tc2
+  resume: true
+  resume_reset_metrics: true

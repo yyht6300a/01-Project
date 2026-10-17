@@ -1,0 +1,9 @@
+runs/
+adapters/
+data/
+data_v1/
+data_v2/
+workers/
+__pycache__/
+*.pyc
+*.log

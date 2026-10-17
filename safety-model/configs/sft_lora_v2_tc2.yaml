@@ -1,0 +1,45 @@
+# LoRA SFT v2 for TC2 (A40, 48GB): target format v2, data_v2
+# (train=3916 / val=530 / test=422, group-isolated by suite::user_task).
+# Anti-overfit changes vs v1: lr 2e-4 -> 1e-4, epochs 3 -> 2, lora_dropout
+# 0.05 -> 0.1, eval_gen_limit 96 -> 256 (val is pre-shuffled so the first
+# N samples cover every suite), early-stop patience 3 -> 2.
+run_name: qwen25-1.5b-risk-lora-v2-tc2
+base_model: /home/msai/fanlong001/ai6101-train/models/Qwen2.5-1.5B-Instruct
+
+data:
+  train: data_v2/train.jsonl
+  val: data_v2/val.jsonl
+
+model:
+  max_seq_len: 1024
+  lora:
+    r: 16
+    lora_alpha: 32
+    lora_dropout: 0.1
+    target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+optim:
+  lr: 1.0e-4
+  weight_decay: 0.01
+  betas: [0.9, 0.999]
+  grad_clip: 1.0
+  warmup_ratio: 0.05
+  min_warmup_steps: 20
+  eta_min_ratio: 0.1
+
+train:
+  micro_batch_size: 4
+  grad_accum: 4
+  max_epochs: 2
+  max_steps: -1
+  eval_steps: 120
+  eval_gen_limit: 256
+  eval_batch_size: 16
+  grad_checkpoint: true
+  early_stop:
+    metric: auroc
+    patience: 2
+    min_delta: 0.002
+  seed: 42
+  output_dir: runs/qwen25-1.5b-risk-lora-v2-tc2
+  resume: false
