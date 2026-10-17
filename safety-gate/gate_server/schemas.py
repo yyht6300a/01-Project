@@ -31,13 +31,27 @@ class ProposedToolCall(BaseModel):
     args: dict[str, Any] = Field(default_factory=dict)
 
 
+class ToolCall(BaseModel):
+    function: str
+    args: dict[str, Any] = Field(default_factory=dict)
+
+
 class ClassifierInput(BaseModel):
-    """插件发来的结构化输入（从 user 消息的 JSON 解析）。"""
+    """插件发来的结构化输入（从 user 消息的 JSON 解析）。
+
+    history 契约（1016 原样，队友 4B 训练用）与 trace 契约（模型组训练的
+    task/tool_name/tool_args/tool_metadata/trace）两种字段都接受，由
+    engine 的 contract 配置决定按哪种组装 prompt。
+    """
 
     user_task: str = ""
     history: list[dict[str, Any]] = Field(default_factory=list)
-    proposed_tool_call: ProposedToolCall
+    proposed_tool_call: ProposedToolCall | None = None
     tool_metadata: ToolMetadata = Field(default_factory=ToolMetadata)
+    task: str = ""
+    tool_name: str = ""
+    tool_args: dict[str, Any] = Field(default_factory=dict)
+    trace: list[ToolCall] = Field(default_factory=list)
 
 
 class GateOutput(BaseModel):

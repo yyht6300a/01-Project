@@ -47,7 +47,7 @@ const test = async (title, fn) => { await fn(); passed++; console.log('  ✓', t
 try {
   // ---- 单元测试：extract ----
   const { extract, normalizeToolName } = await import('../lib/extract.mjs')
-  const { buildRequest, SYSTEM_PROMPT } = await import('../lib/classifier.mjs')
+  const { buildRequest, SYSTEM_PROMPT, MODEL_SYSTEM_PROMPT } = await import('../lib/classifier.mjs')
   console.log('extract / 请求报文')
   await test('去掉工具名前缀', () => {
     assert.equal(normalizeToolName('mcp__agentdojo__send_money'), 'send_money')
@@ -107,6 +107,12 @@ try {
     assert.equal(body.messages[0].content, SYSTEM_PROMPT)
     assert.deepEqual(Object.keys(JSON.parse(body.messages[1].content)), ['user_task', 'history', 'proposed_tool_call', 'tool_metadata'])
     assert.equal(body.temperature, 0); assert.equal(body.max_tokens, 128)
+  })
+  await test('trace 契约（我们训好的模型）报文', () => {
+    const body = buildRequest({ task: 't', toolName: 'send_money', toolArgs: { a: 1 }, toolMetadata: { read_only: false, touches_remote: true }, trace: [] }, 'Qwen2.5-1.5B-Instruct', 'trace')
+    assert.deepEqual(Object.keys(JSON.parse(body.messages[1].content)), ['task', 'tool_name', 'tool_args', 'tool_metadata', 'trace'])
+    assert.equal(body.messages[0].content, MODEL_SYSTEM_PROMPT)
+    assert.equal(body.max_tokens, 384)
   })
 
   // ---- 静态 policy ----

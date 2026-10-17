@@ -71,6 +71,10 @@ export function apply(ctx) {
         history: info.history,
         proposedToolCall: { function: info.toolName, args: info.toolArgs },
         toolMetadata: meta,
+        task: info.task,
+        toolName: info.toolName,
+        toolArgs: info.toolArgs,
+        trace: info.trace,
       }, cfg)
       Object.assign(record, {
         authorization: cls.authorization,
