@@ -1,4 +1,4 @@
-// 每次决策写一行 JSON 到 logs/gate-YYYY-MM-DD.jsonl
+// Each decision writes one JSON line to logs/gate-YYYY-MM-DD.jsonl
 import { appendFileSync, mkdirSync } from 'node:fs'
 import { join } from 'node:path'
 
@@ -10,7 +10,7 @@ export function makeLogger(logDir) {
     try {
       appendFileSync(file, JSON.stringify({ time: now.toISOString(), ...record }) + '\n')
     } catch (err) {
-      console.error('[safety-gate] 写日志失败:', err)
+      console.error('[safety-gate] failed to write log:', err)
     }
   }
 }

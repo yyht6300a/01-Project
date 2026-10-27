@@ -1,5 +1,5 @@
-// 每个任务（dsh 会话）一个预算计数器：第一次见到时为 k，每问一次人减 1。
-// k 设为 null 表示不限次数。
+// One budget counter per task (dsh session): k when first seen, minus 1 each time a human is asked.
+// k set to null means unlimited.
 export class Budget {
   constructor(k) {
     this.k = k

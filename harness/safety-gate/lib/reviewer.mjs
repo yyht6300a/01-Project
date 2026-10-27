@@ -1,12 +1,12 @@
-// 模拟人类审核员
-// mode = "llm"：调 LLM（OpenAI 兼容格式，默认 DeepSeek）扮演给任务的那个用户，决定批准还是拒绝
-// mode = "placeholder"：固定返回 placeholder_decision（本地测试用）
+// Simulated human reviewer
+// mode = "llm": call an LLM (OpenAI-compatible format, DeepSeek by default) to play the user who gave the task and decide approve or deny
+// mode = "placeholder": always return placeholder_decision (for local tests)
 //
-// 审核员能看到：用户任务、到目前为止 agent 的调用和拿到的返回内容（注入文字也在里面，和真人看到的一样）、这次要执行的调用。
-// 审核员看不到：安全门模型的 label / 理由，也看不到任何答案或 ground truth。
-// API key 只从环境变量 DEEPSEEK_API_KEY 读，不写进任何文件。
+// The reviewer can see: the user task, the agent's calls so far and the results it got (injected text included, the same as a real person would see), and the call to be executed now.
+// The reviewer cannot see: the safety gate model's label / rationale, or any answer or ground truth.
+// The API key is read only from the environment variable DEEPSEEK_API_KEY and is never written to any file.
 //
-// 返回 { approved, reason, usage, latencyMs, error }
+// Returns { approved, reason, usage, latencyMs, error }
 
 export const API_KEY_ENV = 'DEEPSEEK_API_KEY'
 
@@ -28,7 +28,7 @@ function clip(text, maxChars) {
   return maxChars && s.length > maxChars ? s.slice(0, maxChars) + ' ...(truncated)' : s
 }
 
-// 把 extract 给的 transcript 写成审核员看的文字
+// Turn the transcript from extract into the text the reviewer reads
 export function formatTranscript(transcript, maxChars = 4000) {
   if (!transcript?.length) return '(nothing yet)'
   const lines = []
@@ -61,7 +61,7 @@ export function buildReviewRequest({ task, transcript, toolName, toolArgs }, rcf
   }
 }
 
-// 从回复里取出 decision。先按 JSON 解析，不行就找第一个 {...}
+// Extract the decision from the reply. Parse as JSON first; if that fails, look for the first {...}
 export function parseDecision(content) {
   const text = String(content ?? '')
   let parsed = null
@@ -78,7 +78,7 @@ export async function review(info, cfg) {
   const rcfg = cfg.reviewer ?? {}
   if (rcfg.mode !== 'llm') {
     const decision = rcfg.placeholder_decision === 'approve'
-    return { approved: decision, reason: `[占位审核员] 固定返回 ${decision ? '批准' : '拒绝'}`, usage: null, latencyMs: 0, error: null }
+    return { approved: decision, reason: `[placeholder reviewer] always returns ${decision ? 'approve' : 'deny'}`, usage: null, latencyMs: 0, error: null }
   }
 
   const started = Date.now()
@@ -86,7 +86,7 @@ export async function review(info, cfg) {
     approved: rcfg.on_error === 'approve', reason: null, usage, latencyMs: Date.now() - started, error,
   })
   const key = process.env[API_KEY_ENV]
-  if (!key) return fail(`环境变量 ${API_KEY_ENV} 没有设置`)
+  if (!key) return fail(`environment variable ${API_KEY_ENV} is not set`)
 
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), rcfg.timeout_ms ?? 60000)
@@ -98,14 +98,14 @@ export async function review(info, cfg) {
       signal: controller.signal,
     })
     let data
-    try { data = await res.json() } catch { return fail(`HTTP ${res.status}，返回的不是 JSON`) }
-    if (!res.ok || data?.error) return fail(`HTTP ${res.status}: ${data?.error?.message ?? '未知错误'}`)
+    try { data = await res.json() } catch { return fail(`HTTP ${res.status}, response is not JSON`) }
+    if (!res.ok || data?.error) return fail(`HTTP ${res.status}: ${data?.error?.message ?? 'unknown error'}`)
     const usage = data?.usage ?? null
     const d = parseDecision(data?.choices?.[0]?.message?.content)
-    if (!d) return fail('审核员的回复里没有合法的 decision', usage)
+    if (!d) return fail('no valid decision in the reviewer reply', usage)
     return { approved: d.approved, reason: d.reason, usage, latencyMs: Date.now() - started, error: null }
   } catch (err) {
-    return fail(err?.name === 'AbortError' ? `超时（${rcfg.timeout_ms ?? 60000}ms）` : `请求失败: ${err?.message ?? err}`)
+    return fail(err?.name === 'AbortError' ? `timeout (${rcfg.timeout_ms ?? 60000}ms)` : `request failed: ${err?.message ?? err}`)
   } finally {
     clearTimeout(timer)
   }

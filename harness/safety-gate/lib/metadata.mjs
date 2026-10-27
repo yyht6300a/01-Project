@@ -1,5 +1,5 @@
-// 工具对照表：tool_metadata.json
-// 同名工具在不同 suite 里标注一致，所以按工具名直接查。
+// Tool lookup table: tool_metadata.json
+// A tool with the same name is annotated the same way in every suite, so it is looked up directly by tool name.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { PLUGIN_DIR } from './config.mjs'
@@ -12,7 +12,7 @@ for (const suite of Object.values(raw)) {
   }
 }
 
-// 返回 { meta, found }。表里没有的工具暂按"不是只读、会影响外部"处理，并在日志里标出来。
+// Returns { meta, found }. A tool not in the table is treated for now as "not read-only, affects the outside", and is marked in the log.
 export function lookupMetadata(toolName) {
   if (Object.hasOwn(table, toolName)) return { meta: table[toolName], found: true }
   return { meta: { read_only: false, touches_remote: true }, found: false }

@@ -1,4 +1,4 @@
-# 运行产生的文件，不提交
+# Files produced at runtime, not committed
 logs/
 node_modules/
 *.csv

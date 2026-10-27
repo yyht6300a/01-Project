@@ -1,9 +1,9 @@
-// 假的安全门模型服务
-// 用来测试插件。按简单规则返回两个 label：
-//   只读工具        -> AUTHORIZED   / LOW   （policy: allow）
-//   会影响外部的     -> UNAUTHORIZED / HIGH  （policy: deny）
-//   其他写操作       -> UNCERTAIN    / LOW   （policy: ask）
-// 运行：node stub-server.mjs        （默认端口 8001，可用 PORT 环境变量修改）
+// Fake safety gate model service
+// Used to test the plugin. Returns the two labels by simple rules:
+//   read-only tools        -> AUTHORIZED   / LOW   (policy: allow)
+//   affects the outside    -> UNAUTHORIZED / HIGH  (policy: deny)
+//   other write actions    -> UNCERTAIN    / LOW   (policy: ask)
+// Run: node stub-server.mjs        (default port 8001, change it with the PORT environment variable)
 import http from 'node:http'
 
 const PORT = Number(process.env.PORT || 8001)
@@ -34,7 +34,7 @@ http.createServer((req, res) => {
     else if (meta.touches_remote) { authorization = 'UNAUTHORIZED'; risk_level = 'HIGH'; risk_factors = ['external_side_effect']; rationale = 'Tool has remote side effects.' }
     else { authorization = 'UNCERTAIN'; risk_level = 'LOW'; rationale = 'Write tool; needs review.' }
 
-    console.log(`[stub] ${toolName} -> ${authorization} / ${risk_level}  (history ${input.history?.length ?? 0} 条)`)
+    console.log(`[stub] ${toolName} -> ${authorization} / ${risk_level}  (history ${input.history?.length ?? 0} entries)`)
     reply(res, 200, {
       id: 'chatcmpl-stub-' + Date.now(),
       object: 'chat.completion',
@@ -44,4 +44,4 @@ http.createServer((req, res) => {
       usage: { prompt_tokens: Math.ceil(raw.length / 4), completion_tokens: 14, total_tokens: Math.ceil(raw.length / 4) + 14 },
     })
   })
-}).listen(PORT, '127.0.0.1', () => console.log(`[stub] 假模型服务已启动：http://127.0.0.1:${PORT}/v1/chat/completions`))
+}).listen(PORT, '127.0.0.1', () => console.log(`[stub] fake model service started: http://127.0.0.1:${PORT}/v1/chat/completions`))
