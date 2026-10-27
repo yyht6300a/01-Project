@@ -3,8 +3,11 @@
   "host": "127.0.0.1",
   "port": 8001,
   "model_path": "checkpoint",
+  "base_model": "",
   "local_only": true,
   "quantize": "4bit",
+  "device": "auto",
+  "contract": "history",
   "log_dir": "logs"
 }
 

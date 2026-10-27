@@ -21,6 +21,8 @@ def make_engine(cfg) -> Engine:
     if cfg.engine == "hf":
         from .hf_engine import HFEngine
 
-        return HFEngine(model_path=cfg.model_path, local_only=cfg.local_only, quantize=cfg.quantize)
+        return HFEngine(model_path=cfg.model_path, local_only=cfg.local_only,
+                        quantize=cfg.quantize, device=cfg.device,
+                        base_model=cfg.base_model, contract=cfg.contract)
     raise ValueError(f"unknown engine: {cfg.engine}")
 

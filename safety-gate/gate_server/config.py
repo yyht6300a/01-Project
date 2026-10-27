@@ -14,8 +14,11 @@ class Config:
     host: str = "127.0.0.1"
     port: int = 8001
     model_path: str = ""
+    base_model: str = ""
     local_only: bool = False
     quantize: str = "4bit"  # 4bit | 8bit | none
+    device: str = "auto"
+    contract: str = "history"  # history | trace
     log_dir: str = "logs"
 
 
@@ -26,7 +29,7 @@ def load_config(path: str | None = None) -> Config:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
     cfg = Config()
-    for key in ("engine", "host", "model_path", "local_only", "quantize", "log_dir"):
+    for key in ("engine", "host", "model_path", "base_model", "local_only", "quantize", "device", "contract", "log_dir"):
         if key in data:
             setattr(cfg, key, data[key])
     cfg.port = int(os.environ.get("PORT", data.get("port", cfg.port)))
