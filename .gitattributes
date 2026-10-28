@@ -1,1 +1,2 @@
 safety-gate/checkpoint/adapter_model.safetensors filter=lfs diff=lfs merge=lfs -text
+safety-model/checkpoint/adapter_model.safetensors filter=lfs diff=lfs merge=lfs -text
